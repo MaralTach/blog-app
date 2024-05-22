@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  Avatar,
+
   Button,
   Container,
   CssBaseline,
@@ -10,44 +10,59 @@ import {
   Box,
   Link,
 } from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+// import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import GoogleIcon from "@mui/icons-material/Google";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-
+import image from "../assets/back5.jpeg";
+import { object, string } from "yup";
 
 const theme = createTheme();
 
 const Register = () => {
+
+  const registerSchema = object({
+    username: string().required("Please enter a username"),
+    firstName: string().required("Please enter a first name"),
+    lastName: string().required("Please enter a last name"),
+    email: string()
+    .email("Please, enter a valid email")
+    .required("Email required"),
+    password: string()
+      .required("Please enter a password")
+      .min(8, "Şifre en az 8 karakter olmalıdır")
+      .max(16, "Şifre en fazla 16 karakter olmalıdır")
+      .matches(/\d+/, "Şifre en az bir rakam içermelidir.")
+      .matches(/[a-z]+/, "Şifre en az bir küçük harf içermelidir.")
+      .matches(/[A-Z]+/, "Şifre en az bir büyük harf içermelidir.")
+      .matches(
+        /[@$!%*?&]+/,
+        "Password must contain at least one special character (@$!%*?&) "
+      ),
+
+  });
+  
   return (
-    <ThemeProvider theme={theme} >
+    <ThemeProvider theme={theme}>
       <Container
         component="main"
         maxWidth="md"
-        sx={{ 
-        backgroundColor: "#ffffff",
-        borderRadius: 4,
-        p: 4,
-        boxShadow: 4,
-        backdropFilter: "blur(20px)",
-        mt: 9,
-      
-         }}
+        sx={{
+          backgroundColor: "#ffffff",
+          borderRadius: 4,
+          p: 4,
+          boxShadow: 4,
+          backdropFilter: "blur(20px)",
+          mt: 9,
+          backgroundImage: `url(${image})`,
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
       >
         <CssBaseline />
         <Grid container>
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            // sx={{
-            //   backgroundColor: "#ffffff",
-            //   borderRadius: 2,
-            //   p: 4,
-            //   boxShadow: 3,
-            //   backdropFilter: "blur(10px)",
-            // }}
-          >
+          <Grid item xs={12} sm={6}>
             <Box
               sx={{
                 display: "flex",
@@ -55,13 +70,14 @@ const Register = () => {
                 alignItems: "center",
               }}
             >
-              {/* <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                <LockOutlinedIcon />
-              </Avatar> */}
-              <Typography component="h1" variant="h5">
+              <Typography
+                component="h1"
+                variant="h5"
+                sx={{ fontSize: 30, fontWeight: "bold" }}
+              >
                 Sign Up
               </Typography>
-              <Box component="form" noValidate sx={{ mt: 3 }}>
+              <Box component="form" noValidate sx={{ mt: 2 }}>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
                     <TextField
@@ -124,14 +140,18 @@ const Register = () => {
             justifyContent="center"
             sx={{ p: 3 }}
             gap={1}
-          
-
           >
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 5, mb: 3, bgcolor: "black", color: "white" }}
+              sx={{
+                mt: 5,
+                mb: 3,
+                color: "white",
+                fontWeight: "bold",
+                backgroundColor: "green",
+              }}
             >
               Sign Up
             </Button>
@@ -167,6 +187,12 @@ const Register = () => {
             >
               Sign up with Facebook
             </Button>
+          </Grid>
+
+          <Grid item xs={0} sm={7} md={6}>
+            {/* <Container>
+            <img src={image} alt="" />
+          </Container> */}
           </Grid>
         </Grid>
       </Container>
