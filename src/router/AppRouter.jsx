@@ -24,7 +24,8 @@ const AppRouter = () => {
         </Route>
         </Routes>
       </Router> */}
-      <Register />
+      {/* <Register /> */}
+      <Dashboard />
     </div>
   )
 }

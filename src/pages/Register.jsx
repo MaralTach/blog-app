@@ -1,6 +1,5 @@
 import React from "react";
 import {
-
   Button,
   Container,
   CssBaseline,
@@ -10,38 +9,39 @@ import {
   Box,
   Link,
 } from "@mui/material";
-// import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import GoogleIcon from "@mui/icons-material/Google";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import image from "../assets/back5.jpeg";
 import { object, string } from "yup";
+import useApiRequest from "../hooks/useApiRequest";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 
 const theme = createTheme();
 
 const Register = () => {
+  const { register } = useApiRequest();
 
   const registerSchema = object({
     username: string().required("Please enter a username"),
     firstName: string().required("Please enter a first name"),
     lastName: string().required("Please enter a last name"),
     email: string()
-    .email("Please, enter a valid email")
-    .required("Email required"),
+      .email("Please, enter a valid email")
+      .required("Email required"),
     password: string()
       .required("Please enter a password")
-      .min(8, "Şifre en az 8 karakter olmalıdır")
-      .max(16, "Şifre en fazla 16 karakter olmalıdır")
-      .matches(/\d+/, "Şifre en az bir rakam içermelidir.")
-      .matches(/[a-z]+/, "Şifre en az bir küçük harf içermelidir.")
-      .matches(/[A-Z]+/, "Şifre en az bir büyük harf içermelidir.")
+      .min(8, "Password must be at least 8 characters")
+      .max(16, "Password must be at most 16 characters")
+      .matches(/\d+/, "Password must contain at least one digit")
+      .matches(/[a-z]+/, "Password must contain at least one lowercase letter")
+      .matches(/[A-Z]+/, "Password must contain at least one uppercase letter")
       .matches(
         /[@$!%*?&]+/,
-        "Password must contain at least one special character (@$!%*?&) "
+        "Password must contain at least one special character (@$!%*?&)"
       ),
-
   });
-  
+
   return (
     <ThemeProvider theme={theme}>
       <Container
@@ -77,97 +77,122 @@ const Register = () => {
               >
                 Sign Up
               </Typography>
-              <Box component="form" noValidate sx={{ mt: 2 }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <TextField
-                      variant="outlined"
-                      required
-                      fullWidth
-                      id="fullName"
-                      label="Full Name"
-                      name="fullName"
-                      autoComplete="name"
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      variant="outlined"
-                      required
-                      fullWidth
-                      id="email"
-                      label="Email Address"
-                      name="email"
-                      autoComplete="email"
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      variant="outlined"
-                      required
-                      fullWidth
-                      name="password"
-                      label="Password"
-                      type="password"
-                      id="password"
-                      autoComplete="new-password"
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      variant="outlined"
-                      required
-                      fullWidth
-                      name="confirmPassword"
-                      label="Confirm Password"
-                      type="password"
-                      id="confirmPassword"
-                      autoComplete="new-password"
-                    />
-                  </Grid>
-                </Grid>
-              </Box>
-            </Box>
-          </Grid>
 
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-            sx={{ p: 3 }}
-            gap={1}
-          >
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{
-                mt: 5,
-                mb: 3,
-                color: "white",
-                fontWeight: "bold",
-                backgroundColor: "green",
-              }}
-            >
-              Sign Up
-            </Button>
+              <Formik
+                initialValues={{
+                  username: "",
+                  firstName: "",
+                  lastName: "",
+                  email: "",
+                  password: "",
+                }}
+                validationSchema={registerSchema}
+                onSubmit={(values, actions) => {
+                  register(values);
+                  actions.resetForm();
+                  actions.setSubmitting(false);
+                }}
+              >
+                {({ isSubmitting }) => (
+                  <Form>
+                    <Box sx={{ mt: 2 }}>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                          <Field
+                            as={TextField}
+                            variant="outlined"
+                            fullWidth
+                            id="username"
+                            label="Username"
+                            name="username"
+                            autoComplete="username"
+                            helperText={<ErrorMessage name="username" />}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Field
+                            as={TextField}
+                            variant="outlined"
+                            fullWidth
+                            id="firstName"
+                            label="First Name"
+                            name="firstName"
+                            autoComplete="fname"
+                            helperText={<ErrorMessage name="firstName" />}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Field
+                            as={TextField}
+                            variant="outlined"
+                            fullWidth
+                            id="lastName"
+                            label="Last Name"
+                            name="lastName"
+                            autoComplete="lname"
+                            helperText={<ErrorMessage name="lastName" />}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Field
+                            as={TextField}
+                            variant="outlined"
+                            fullWidth
+                            id="email"
+                            label="Email Address"
+                            name="email"
+                            autoComplete="email"
+                            helperText={<ErrorMessage name="email" />}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Field
+                            as={TextField}
+                            variant="outlined"
+                            fullWidth
+                            name="password"
+                            label="Password"
+                            type="password"
+                            id="password"
+                            autoComplete="new-password"
+                            helperText={<ErrorMessage name="password" />}
+                          />
+                        </Grid>
+                      </Grid>
+
+                
+                      <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{
+                          mt: 5,
+                          mb: 3,
+                          color: "white",
+                          fontWeight: "bold",
+                          backgroundColor: "green",
+                        }}
+                        disabled={isSubmitting}
+                      >
+                        Sign Up
+                      </Button>
+                    </Box>
+                  </Form>
+                )}
+              </Formik>
+            </Box>
             <Grid
               container
               justifyContent="center"
               display="flex"
-              flexDirection="colomn"
+              flexDirection="column"
             >
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/login" variant="body2">
                   Already have an account? Log in
                 </Link>
               </Grid>
             </Grid>
-
             <Typography variant="body2" align="center" sx={{ mt: 2 }}>
               Or
             </Typography>
@@ -187,12 +212,6 @@ const Register = () => {
             >
               Sign up with Facebook
             </Button>
-          </Grid>
-
-          <Grid item xs={0} sm={7} md={6}>
-            {/* <Container>
-            <img src={image} alt="" />
-          </Container> */}
           </Grid>
         </Grid>
       </Container>
